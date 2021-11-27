@@ -18,7 +18,8 @@ import firebase from './Fire'
         showSubHeadDiv:false,
         mainTestName:'',
         mainTestNameListObjects:[],
-        showMainTestNameListStatus:false
+        showMainTestNameListStatus:false,
+        arrayForDetail:[]
       }
 
   }
@@ -60,13 +61,6 @@ import firebase from './Fire'
     }
 
 
-
-
-
-   
-    
-    
-    
     changeHandler=(e)=>{
     this.setState({[e.target.name]: e.target.value  })
     
@@ -89,30 +83,33 @@ showMainHeadDiv=()=>{
 
 
 saveTestName=()=>{
-var testNameExist = this.state.testNameListObjects.find((ob)=>{return ob.testName === this.state.testName})
+var selectedMainTest = document.getElementById('mainTestDropDownList').value
+var objIndex = document.getElementById('mainTestDropDownList').selectedIndex
+var reqObject = this.state.mainTestNameListObjects.find((ob)=>{return ob.mainTestName === selectedMainTest})
 
-if(testNameExist){
-  alert('This Test Name is already exist')
+
+var subTestObj = {};
+subTestObj.subTestName = this.state.testName
+subTestObj.range = this.state.normalRange
+
+if('subTestArray' in reqObject){
+  reqObject.subTestArray.push(subTestObj)
 }else{
-
-
-
-
-
-
-      var testName = this.state.testName;
-      var normalRange = this.state.normalRange;
-      var testNameObject = [];
-      testNameObject.testName = testName.replace(/  +/g, ' ').trim();
-      testNameObject.normalRange = normalRange.replace(/  +/g, ' ').trim();
-      var key = firebase.database().ref('testNameList').push().key
-      testNameObject.key = key;
-
-      firebase.database().ref('testNameList').child(key).set(testNameObject)
-
-      alert('Test Name added Successfully')
-      this.setState({testName:'', normalRange:''}) 
+  var subTestArray = [];
+  subTestArray.push(subTestObj)
+  reqObject.subTestArray = subTestArray
 }
+
+
+firebase.database().ref('mainTestNameList').child(reqObject.key).set(reqObject)
+
+
+this.state.mainTestNameListObjects.splice(objIndex,1,reqObject)
+this.setState({testName:'', normalRange:''})
+alert('Added Successfully')
+
+
+
     }
 
 
@@ -121,40 +118,65 @@ if(testNameExist){
 
 
     getSubTestNameList = () =>{
-      this.setState({showTestNameListStatus: !this.state.showTestNameListStatus})
-      }
+      var subTestPromise = new Promise((res,rej)=>{
+        var mainTest = document.getElementById('mainTestDropDownListDetail').value 
+        var requiredObj = this.state.mainTestNameListObjects.find((obb)=>{return obb.mainTestName === mainTest})
+        
+        this.setState({arrayForDetail:requiredObj.subTestArray})
+        res('data found')
+      
+      })
+
+      subTestPromise.then((data)=>{
+        this.setState({showTestNameListStatus: true})
+      })
+      
+     
+    
+    
+    }
 
 
 
 
 editTestName=(i)=>{
 
+  
 
-var reqObj = this.state.testNameListObjects[i]
-var key = reqObj.key
 
-var editTest = prompt('Please edit Test Name',reqObj.testName)
+
+  var mainTest = document.getElementById('mainTestDropDownListDetail').value 
+  var requiredObj = this.state.mainTestNameListObjects.find((obb)=>{return obb.mainTestName === mainTest})
+  var indexInStateObject = document.getElementById('mainTestDropDownListDetail').selectedIndex
+  
+  var reqObjj = requiredObj.subTestArray[i]
+
+var editTest = prompt('Please edit Test Name',reqObjj.subTestName)
 if(editTest === null){
-  editTest = reqObj.testName
+  editTest = reqObjj.subTestName
 }
 
-var editRange = prompt('Please edit Normal Range of the Test',reqObj.normalRange)
+var editRange = prompt('Please edit Normal Range of the Test',reqObjj.range)
 if(editRange === null){
-  editRange = reqObj.normalRange
+  editRange = reqObjj.range
 }
 
-reqObj.testName = editTest.replace(/  +/g, ' ').trim();
-reqObj.normalRange = editRange.replace(/  +/g, ' ').trim()
+reqObjj.subTestName = editTest.replace(/  +/g, ' ').trim();
+reqObjj.range = editRange.replace(/  +/g, ' ').trim()
+
+requiredObj.subTestArray.splice(i,1,reqObjj)
 
 
-firebase.database().ref('testNameList').child(reqObj.key).set(reqObj)
+firebase.database().ref('mainTestNameList').child(requiredObj.key).set(requiredObj)
 
 
-this.state.testNameListObjects.splice(i,1,reqObj)
+this.state.mainTestNameListObjects.splice(indexInStateObject,1,requiredObj)
 
 alert('Edited Successfully')
 
 
+
+ 
 
       }
 
@@ -239,10 +261,6 @@ alert('Edited Successfully')
 
 
 
-
-
-
-
     render(){
         return(
           
@@ -288,7 +306,8 @@ alert('Edited Successfully')
 {/* Div of Sub head define */}
             <div className={this.state.showSubHeadDiv === false ? 'display' : 'container'}>
               <br/>
-              <span style={{fontSize:'19px',color:'brown'}}> Define Test Name</span>
+              <span style={{fontSize:'19px',color:'brown'}}> Define Sub Test Name</span>
+              <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownList'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
               <input type='text' value={this.state.testName} name='testName' onChange={this.changeHandler} placeholder='Test Name' />
               <input type='text' value={this.state.normalRange} name='normalRange' onChange={this.changeHandler} placeholder='Normal Range' />
               <br/>
@@ -299,9 +318,10 @@ alert('Edited Successfully')
 {/* Code to get list of all opened sub head names */}
 <br/><br/><br/><br/>
               <span style={{fontSize:'19px',color:'brown'}}>List of Test Names</span><br/>
-              <button style={{padding:'6px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.getSubTestNameList}> {this.state.showTestNameListStatus === false ? 'Get List' : 'Hide List'} </button>
+              <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownListDetail'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
+              <button style={{padding:'6px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.getSubTestNameList}> Get Detail </button>
               <div className={this.state.showTestNameListStatus === false ? 'display' : ''}>
-              <table><thead><tr><th>Test Name</th><th>Range</th></tr></thead><tbody>{this.state.testNameListObjects.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.testName}</td><td>{item.normalRange}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editTestName(index)}>edit</a></td></tr>})    }</tbody></table> 
+              <table><thead><tr><th>Test Name</th><th>Range</th></tr></thead><tbody>{this.state.arrayForDetail.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.subTestName}</td><td>{item.range}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editTestName(index)}>edit</a></td></tr>})    }</tbody></table> 
 
               </div>
 
