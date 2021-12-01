@@ -19,7 +19,10 @@ import firebase from './Fire'
         mainTestName:'',
         mainTestNameListObjects:[],
         showMainTestNameListStatus:false,
-        arrayForDetail:[]
+        arrayForDetail:[],
+        refreshTestNameList:false,
+        noDataSubTestName:false,
+        noDataSubTest:''
       }
 
   }
@@ -35,14 +38,6 @@ import firebase from './Fire'
     rej('Operation Failed: Data From Firebase does not push in state successfully')
   } )
   dataPushPromise.then(()=>{
-
-
-    firebase.database().ref('testNameList').on('child_added' , (data)=> { 
-      this.state.testNameListObjects.push(data.val())
-    }  )
-
-
-
 
     firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
       this.state.mainTestNameListObjects.push(data.val())
@@ -83,6 +78,10 @@ showMainHeadDiv=()=>{
 
 
 saveTestName=()=>{
+
+if(document.getElementById('mainTestDropDownList').value){
+
+
 var selectedMainTest = document.getElementById('mainTestDropDownList').value
 var objIndex = document.getElementById('mainTestDropDownList').selectedIndex
 var reqObject = this.state.mainTestNameListObjects.find((ob)=>{return ob.mainTestName === selectedMainTest})
@@ -110,6 +109,10 @@ alert('Added Successfully')
 
 
 
+}else{
+  alert("Please select 'Main Test Name' First ")
+}
+
     }
 
 
@@ -118,22 +121,36 @@ alert('Added Successfully')
 
 
     getSubTestNameList = () =>{
+
+      if(document.getElementById('mainTestDropDownListDetail').value){
+
+
       var subTestPromise = new Promise((res,rej)=>{
         var mainTest = document.getElementById('mainTestDropDownListDetail').value 
         var requiredObj = this.state.mainTestNameListObjects.find((obb)=>{return obb.mainTestName === mainTest})
         
+        if('subTestArray' in requiredObj){
         this.setState({arrayForDetail:requiredObj.subTestArray})
         res('data found')
-      
+        }else{
+          rej('No data found')
+        }
+
       })
 
       subTestPromise.then((data)=>{
-        this.setState({showTestNameListStatus: true})
-      })
+        this.setState({showTestNameListStatus: true, noDataSubTestName:false})
+      },
+      (err)=>{
+        this.setState({noDataSubTestName:true, showTestNameListStatus:false, noDataSubTest:err})
+      }
+      )
       
      
     
-    
+      }else{
+        alert("Please select 'Main Test Name' First ")
+      }
     }
 
 
@@ -177,20 +194,39 @@ alert('Edited Successfully')
 
 
  
-
-      }
-
+}
 
 
 
 
+deleteSubTestName=(i)=>{
+  var delKey = prompt("write 'Y' and Press OK")
+  if(delKey === 'Y'){
+ 
+  var mainTest = document.getElementById('mainTestDropDownListDetail').value 
+  var requiredObj = this.state.mainTestNameListObjects.find((obb)=>{return obb.mainTestName === mainTest})
+  var indexInStateObject = document.getElementById('mainTestDropDownListDetail').selectedIndex
+  
+  requiredObj.subTestArray.splice(i,1)
+
+
+firebase.database().ref('mainTestNameList').child(requiredObj.key).set(requiredObj)
+
+
+this.state.mainTestNameListObjects.splice(indexInStateObject,1,requiredObj)
+
+alert('Deleted Successfully')
+  }else{
+    alert('You have entered wrong key')
+  }
+}
 
 
 
 
 
 
-      saveMainTestName=()=>{
+   saveMainTestName=()=>{
         var testNameExist = this.state.mainTestNameListObjects.find((ob)=>{return ob.mainTestName === this.state.mainTestName})
       
       if(testNameExist){
@@ -256,8 +292,27 @@ alert('Edited Successfully')
       
         }
       
-      
+        deleteMainTestName=(i)=>{
+          var delKey = prompt("write 'Y' and Press OK")
+    if(delKey === 'Y'){
 
+          var reqObj = this.state.mainTestNameListObjects[i]
+          firebase.database().ref('mainTestNameList').child(reqObj.key).remove()
+          this.state.mainTestNameListObjects.splice(i,1)
+        alert('Deleted sucessfully')
+    }else{
+      alert('You have entered wrong key')
+    }
+        }
+
+
+
+
+      
+        refreshTestNameList=()=>{
+          this.setState({refreshTestNameList: !this.state.refreshTestNameList})
+          
+        }
 
 
 
@@ -274,7 +329,7 @@ alert('Edited Successfully')
 
 {/* the Div of buttons of define main head and sub head */}
 <div className='container'>
-<button onClick={this.showMainHeadDiv}>Define Main Head</button> <button onClick={this.showSubHeadDiv}>Define Sub Head</button>
+<button onClick={this.showMainHeadDiv} style={{fontSize:'12px'}}>Define Main Head</button> <button onClick={this.showSubHeadDiv} style={{fontSize:'12px'}}>Define Sub Head</button>
 </div>
 
 
@@ -293,7 +348,7 @@ alert('Edited Successfully')
 <span style={{fontSize:'19px',color:'blue'}}>List of Main Test Names</span><br/>
  <button style={{padding:'6px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.getTestNameList}> {this.state.showMainTestNameListStatus === false ? 'Get List' : 'Hide List'} </button>
  <div className={this.state.showMainTestNameListStatus === false ? 'display' : ''}>
- <table><thead><tr><th>Main Test Name</th><th>edit/delete</th></tr></thead><tbody>{this.state.mainTestNameListObjects.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.mainTestName}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editMainTestName(index)}>edit</a></td></tr>})    }</tbody></table> 
+ <table><thead><tr><th>Main Test Name</th><th>edit/delete</th></tr></thead><tbody>{this.state.mainTestNameListObjects.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.mainTestName}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editMainTestName(index)}>edit</a><a href='#' className="material-icons" style={{color:'red',fontSize:'15px'}} onClick={()=> this.deleteMainTestName(index)}>delete</a></td></tr>})    }</tbody></table> 
 
   </div>
   </div>
@@ -306,7 +361,8 @@ alert('Edited Successfully')
 {/* Div of Sub head define */}
             <div className={this.state.showSubHeadDiv === false ? 'display' : 'container'}>
               <br/>
-              <span style={{fontSize:'19px',color:'brown'}}> Define Sub Test Name</span>
+              <span style={{fontSize:'19px',color:'brown'}}> Define Sub Test Name</span><br/>
+              <button style={{width:'65%',backgroundColor:'lightblue'}} onClick={this.refreshTestNameList}>Select Main Test Name</button>
               <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownList'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
               <input type='text' value={this.state.testName} name='testName' onChange={this.changeHandler} placeholder='Test Name' />
               <input type='text' value={this.state.normalRange} name='normalRange' onChange={this.changeHandler} placeholder='Normal Range' />
@@ -317,14 +373,18 @@ alert('Edited Successfully')
 
 {/* Code to get list of all opened sub head names */}
 <br/><br/><br/><br/>
-              <span style={{fontSize:'19px',color:'brown'}}>List of Test Names</span><br/>
+              <span style={{fontSize:'19px',color:'brown'}}>List of Sub Test Names</span><br/>
+              <button style={{width:'65%', backgroundColor:'lightblue'}} onClick={this.refreshTestNameList}>Select Main Test Name</button>
               <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownListDetail'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
               <button style={{padding:'6px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.getSubTestNameList}> Get Detail </button>
               <div className={this.state.showTestNameListStatus === false ? 'display' : ''}>
-              <table><thead><tr><th>Test Name</th><th>Range</th></tr></thead><tbody>{this.state.arrayForDetail.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.subTestName}</td><td>{item.range}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editTestName(index)}>edit</a></td></tr>})    }</tbody></table> 
-
+              <table><thead><tr><th>Test Name</th><th>Range</th><th>edit/delete</th></tr></thead><tbody>{this.state.arrayForDetail.map(  (item,index)=>{return <tr key={index}><td>{(index+1) + '- ' + item.subTestName}</td><td>{item.range}</td><td><a href='#' className="material-icons" style={{color:'green',fontSize:'15px'}} onClick={()=> this.editTestName(index)}>edit</a><a href='#' className="material-icons" style={{color:'red',fontSize:'15px'}} onClick={()=> this.deleteSubTestName(index)}>delete</a></td></tr>})    }</tbody></table>
               </div>
 
+              <div className={this.state.noDataSubTestName === false ? 'display' : ''}>
+               <br/>
+              <span style={{fontSize:'25px'}}>{this.state.noDataSubTest}</span>
+              </div>
 
 
 {/* {this.state.testNameListObjects.map((ob,i)=>{return <p>{ob.testName}</p>})} */}
