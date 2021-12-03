@@ -94,5 +94,6 @@ input:focus{
 }
 
 input{
-    height: 25px !important;
+    height: 19px !important;
+    width: 65% !important;
 }

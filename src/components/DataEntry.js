@@ -12,39 +12,97 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
       this.state ={
               user:null,
               userEmail:null,
+              mainTestNameListObjects:[],
+              refreshTestNameList:false,
+              subTestArray:[]
       }
 
   }
 
 
- async componentDidMount(){
-    var userId = firebase.auth().currentUser.uid;
-    var userEmail = firebase.auth().currentUser.email
+//  async componentDidMount(){
+//     var userId = firebase.auth().currentUser.uid;
+//     var userEmail = firebase.auth().currentUser.email
     
-    this.setState({user:userId,userEmail:userEmail})
-  }
+//     this.setState({user:userId,userEmail:userEmail})
+//   }
+async componentDidMount(){
+  var dataPushPromise = new Promise( (res,rej)=>{
+  var userId = firebase.auth().currentUser.uid;
+  var userEmail = firebase.auth().currentUser.email
+  this.setState({user:userId,userEmail:userEmail})
+  res()
+  rej('Operation Failed: Data From Firebase does not push in state successfully')
+} )
+dataPushPromise.then(()=>{
+
+  firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
+    this.state.mainTestNameListObjects.push(data.val())
+  }  )
 
 
+})
+
+}
+
+
+refreshTestNameList=()=>{
+  this.setState({refreshTestNameList:!this.state.refreshTestNameList})
+}
 
   
+shwoSubHeads=()=>{
+
+  var subTestPromise = new Promise((res,rej)=>{
+  var mainTest = document.getElementById('mainTestDropDownListDataEntry').value 
+  var requiredObj = this.state.mainTestNameListObjects.find((obb)=>{return obb.mainTestName === mainTest})
+res(requiredObj)  
+})
+
+subTestPromise.then((obj)=>{
+  this.setState({subTestArray:obj.subTestArray})
+  // console.log(this.state.subTestArray)
+})
+  
+
+  
+}
+
+
+
 
     render(){
         return(
           <div>
         <span style={{fontSize:'12px'}}><b style={{color:'green',marginLeft:'30px'}}>{this.state.userEmail}</b> / {navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
 <br/> <br/>
-          <div>
+          <div className='container'>
            
+          {/* Patient Information */}
+          <span style={{fontSize:'16px',color:'brown'}}> Patient Information</span><br/>
+          <input type='text' value={this.state.date} name='date' onChange={this.changeHandler} placeholder='Date' /><br/>
+          <input type='text' value={this.state.patientName} name='patientName' onChange={this.changeHandler} placeholder='Patient Name' /><br/>
+          <input type='text' value={this.state.age} name='age' onChange={this.changeHandler} placeholder='Age' /><br/>
+          <input type='text' value={this.state.cnic} name='cnic' onChange={this.changeHandler} placeholder='CNIC #' /><br/>
+          <input type='text' value={this.state.contact} name='contact' onChange={this.changeHandler} placeholder='Contact Number' /><br/>
+          <input type='text' value={this.state.testFee} name='testFee' onChange={this.changeHandler} placeholder='Test Fee (Rs. )' /><br/>
+          <input type='text' value={this.state.refferedBy} name='refferedBy' onChange={this.changeHandler} placeholder='Reffered By' /><br/>
+          <input type='text' value={this.state.customerPassword} name='customerPassword' onChange={this.changeHandler} placeholder='customer Password' /><br/>
+           
+           {/* Test Result */}
+           <br/><br/>
+          <span style={{fontSize:'14px',color:'blue'}}> Test Result</span><br/>
 
-           Data entry
+          <button style={{width:'65%', backgroundColor:'lightblue'}} onClick={this.refreshTestNameList}>Select Main Test Name</button>
+          <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownListDataEntry'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
+          <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.shwoSubHeads}> Proceed </button>
+          
+          <div>
+            <ol>
+            {this.state.subTestArray.map((it,ind)=>{return <li key={ind}>{it.subTestName} <input className='browser-default' type='text' placeholder='Result'/> </li>})}
+            </ol>
+          </div>
 
-           {/* <MainBar /> */}
-          {/* <Route exact path='/AccountsRecord' component={DataEntry} />
-          <Route path='/AccountsRecord/Content' component={Content}/>
-          <Route path='/AccountsRecord/Ledger' component={Ledger}/>
-          <Route path='/AccountsRecord/Trial' component={Trial}/>
-          <Route path='/AccountsRecord/Vouchers' component={Vouchers}/> */}
-          {/* <Route path='/AccountsRecord/OnlineAccess' component={OnlineAccess}/> */}
           </div>
 
           </div>

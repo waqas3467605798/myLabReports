@@ -337,8 +337,8 @@ alert('Deleted Successfully')
 {/* Div of Main Head define */}
 <div className={this.state.showMainHeadDiv === false ? 'display' : 'container'}>
 <br/>
-<span style={{fontSize:'19px',color:'blue'}}>Define Main Test Name</span>
-<input type='text' value={this.state.mainTestName} name='mainTestName' onChange={this.changeHandler} placeholder='Test Name'/>
+<span style={{fontSize:'19px',color:'blue'}}>Define Main Test Name</span><br/><br/>
+<input type='text' value={this.state.mainTestName} name='mainTestName' onChange={this.changeHandler} placeholder='Test Name'/><br/>
 <button style={{padding:'10px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'pink'}} onClick={this.saveMainTestName} >Save</button>
         
         
@@ -363,9 +363,9 @@ alert('Deleted Successfully')
               <br/>
               <span style={{fontSize:'19px',color:'brown'}}> Define Sub Test Name</span><br/>
               <button style={{width:'65%',backgroundColor:'lightblue'}} onClick={this.refreshTestNameList}>Select Main Test Name</button>
-              <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownList'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
-              <input type='text' value={this.state.testName} name='testName' onChange={this.changeHandler} placeholder='Test Name' />
-              <input type='text' value={this.state.normalRange} name='normalRange' onChange={this.changeHandler} placeholder='Normal Range' />
+              <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownList'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div><br/>
+              <input type='text' value={this.state.testName} name='testName' onChange={this.changeHandler} placeholder='Test Name' /><br/>
+              <input type='text' value={this.state.normalRange} name='normalRange' onChange={this.changeHandler} placeholder='Normal Range' /><br/>
               <br/>
               <button style={{padding:'10px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'pink'}} onClick={this.saveTestName} >Save</button>
 
