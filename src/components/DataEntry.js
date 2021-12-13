@@ -14,7 +14,17 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
               userEmail:null,
               mainTestNameListObjects:[],
               refreshTestNameList:false,
-              subTestArray:[]
+              subTestArray:[],
+              date:'',
+              patientName:'',
+              age:'',
+              cnic:'',
+              contact:'',
+              testFee:'',
+              refferedBy:'',
+              customerPassword:'',
+              changeInState:false
+
       }
 
   }
@@ -46,6 +56,15 @@ dataPushPromise.then(()=>{
 }
 
 
+changeHandler=(e)=>{
+  this.setState({[e.target.name]: e.target.value  })
+  
+  
+  }
+
+
+
+
 refreshTestNameList=()=>{
   this.setState({refreshTestNameList:!this.state.refreshTestNameList})
 }
@@ -60,8 +79,10 @@ res(requiredObj)
 })
 
 subTestPromise.then((obj)=>{
-  this.setState({subTestArray:obj.subTestArray})
-  // console.log(this.state.subTestArray)
+  // this.setState({subTestArray:obj.subTestArray})
+  this.state.subTestArray.push(obj.subTestArray)
+  console.log(this.state.subTestArray)
+  this.setState({changeInState: !this.state.changeInState})
 })
   
 
@@ -98,9 +119,11 @@ subTestPromise.then((obj)=>{
           <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.shwoSubHeads}> Proceed </button>
           
           <div>
-            <ol>
-            {this.state.subTestArray.map((it,ind)=>{return <li key={ind}>{it.subTestName} <input className='browser-default' type='text' placeholder='Result'/> </li>})}
-            </ol>
+            
+            {/* {this.state.subTestArray.map((it,ind)=>{return <p key={ind}>{it.subTestName} <input className='browser-default listedInput' type='text' placeholder='Result'/> </p>})} */}
+             {/* {this.state.subTestArray.map((it,ind)=>{return <p key={ind}>{it.map((item,index)=>{return <p key={index}>{item.subTestName}<input className='browser-default listedInput' type='text' placeholder='Result'/> </p>})} </p>})} */}
+          {/* {this.state.subTestArray.map(  (it,ind)=>{return <div key={ind}>{it.map(  (item,index)=>{return <table key={index}><thead><tr><th>Test Name</th><th>Result</th><th>Range</th></tr></thead><tbody><tr><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' placeholder='Result'/></td> <td>{item.range}</td></tr></tbody> </table>}  )}</div>}  )} */}
+          {this.state.subTestArray.map(  (it,ind)=>{return <table key={ind}><thead><th>Test Name</th><th>Result</th><th>Range</th></thead><tbody>{it.map(  (item,index)=>{return <tr><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' placeholder='Result'/></td> <td>{item.range}</td></tr>}  )}</tbody></table>}  )}
           </div>
 
           </div>
