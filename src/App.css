@@ -86,11 +86,12 @@ tr td{
 
 th{
     border: 1px solid lightgray !important;
+    padding: 1px !important;
     
 }
 
 input:focus{
-    background-color: lightyellow !important;
+    background-color: yellow !important;
 }
 
 input{
@@ -101,3 +102,4 @@ input{
 .listedInput{
     width: 100px !important;
 }
+
