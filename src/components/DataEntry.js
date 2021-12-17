@@ -24,7 +24,8 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
               refferedBy:'',
               customerPassword:'',
               changeInState:false,
-              showButton:false
+              showButton:false,
+              noSubHeads:''
               
 
       }
@@ -83,6 +84,7 @@ res(requiredObj)
 })
 
 subTestPromise.then((obj)=>{
+  if('subTestArray' in obj){
   // this.setState({subTestArray:obj.subTestArray})
 var mainHead = document.getElementById('mainTestDropDownListDataEntry').value
 this.state.subTestArray.push({testName:mainHead, subTests:obj.subTestArray})
@@ -90,8 +92,12 @@ this.state.subTestArray.push({testName:mainHead, subTests:obj.subTestArray})
   // this.state.subTestArray.push(obj.subTestArray)
   // this.state.mainHeadDisplay.push(document.getElementById('mainTestDropDownListDataEntry').value)
   console.log(this.state.subTestArray)
-  this.setState({changeInState: !this.state.changeInState, showButton:true})
+  this.setState({changeInState: !this.state.changeInState, showButton:true, noSubHeads:''})
 
+  }else{
+    this.setState({noSubHeads:`No Sub Heads are Available for '${document.getElementById('mainTestDropDownListDataEntry').value}'`})
+    
+  }
 })
   
 
@@ -165,13 +171,16 @@ this.setState({date:'',patientName:'',age:'',cnic:'',contact:'',testFee:'',reffe
           <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownListDataEntry'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
           <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'pink'}} onClick={this.shwoSubHeads}> Add </button>
           <div>
-          <br/>
+          
             {/* {this.state.subTestArray.map((it,ind)=>{return <p key={ind}>{it.subTestName} <input className='browser-default listedInput' type='text' placeholder='Result'/> </p>})} */}
              {/* {this.state.subTestArray.map((it,ind)=>{return <p key={ind}>{it.map((item,index)=>{return <p key={index}>{item.subTestName}<input className='browser-default listedInput' type='text' placeholder='Result'/> </p>})} </p>})} */}
           {/* {this.state.subTestArray.map(  (it,ind)=>{return <div key={ind}>{it.map(  (item,index)=>{return <table key={index}><thead><tr><th>Test Name</th><th>Result</th><th>Range</th></tr></thead><tbody><tr><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' placeholder='Result'/></td> <td>{item.range}</td></tr></tbody> </table>}  )}</div>}  )} */}
           {/* {this.state.subTestArray.map(  (it,ind)=>{return <table key={ind}><thead><th>Test Name</th><th>Result</th><th>Range</th></thead><tbody>{it.map(  (item,index)=>{return <tr><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' onChange={(e)=>this.setResultValue(ind,index,e)} placeholder='Result'/></td> <td>{item.range}</td></tr>}  )}</tbody></table>}  )} */}
-          {this.state.subTestArray.map(  (it,ind)=>{return <table key={ind}><thead><tr><th colSpan='3' style={{color:'red',textAlign:'center'}}>{it.testName}</th></tr><tr><th>Test Name</th><th>Result</th><th>Range</th></tr></thead><tbody>{it.subTests.map(  (item,index)=>{return <tr key={index}><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' onChange={(e)=>this.setResultValue(ind,index,e)} placeholder='Result'/></td><td>{item.range}</td></tr>})}</tbody></table>})}
+          <span style={{color:'red', fontSize:'16px'}}><b>{this.state.noSubHeads}</b></span>
+          <br/><br/>
+          {this.state.subTestArray.map(  (it,ind)=>{return <table key={ind}><thead><tr><th colSpan='3' style={{color:'green',textAlign:'center'}}>{it.testName}</th></tr><tr><th>Test Name</th><th>Result</th><th>Range</th></tr></thead><tbody>{it.subTests.map(  (item,index)=>{return <tr key={index}><td>{item.subTestName}</td><td><input className='browser-default listedInput' type='text' onChange={(e)=>this.setResultValue(ind,index,e)} placeholder='Result'/></td><td>{item.range}</td></tr>})}</tbody></table>})}
           <br/>
+          
           <div className={this.state.showButton === false ? 'display' : ''}>
           <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.generateReport}> Generate Report </button>
           </div>
