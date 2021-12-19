@@ -25,7 +25,8 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
               customerPassword:'',
               changeInState:false,
               showButton:false,
-              noSubHeads:''
+              noSubHeads:'',
+              reportNumber:null
               
 
       }
@@ -52,6 +53,13 @@ dataPushPromise.then(()=>{
   firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
     this.state.mainTestNameListObjects.push(data.val())
   }  )
+
+
+  firebase.database().ref('reportNumber').on('child_added' , (data)=> {
+    this.setState({reportNumber:data.val()})
+  }  )
+
+
 
 
 })
@@ -118,6 +126,8 @@ setResultValue=(arrayIndex,objectIndex,event)=>{
   // console.log(objectIndex)
 }
 
+
+
 generateReport = ()=>{
 var reportObj = {};
 reportObj.date = this.state.date;
@@ -130,6 +140,9 @@ reportObj.refferedBy = this.state.refferedBy;
 reportObj.customerPassword = this.state.customerPassword;
 reportObj.patientReport = this.state.subTestArray;
 
+var testReportNumber = this.state.reportNumber + 1
+
+reportObj.reportNumber = testReportNumber
 
 var key = firebase.database().ref('customerReports').push().key
 reportObj.key = key;
@@ -139,7 +152,8 @@ firebase.database().ref('customerReports').child(key).set(reportObj)
 alert('Report Successfully Generated')
 
 
-this.setState({date:'',patientName:'',age:'',cnic:'',contact:'',testFee:'',refferedBy:'',customerPassword:'',subTestArray:[]})
+this.setState({date:'',patientName:'',age:'',cnic:'',contact:'',testFee:'',refferedBy:'',customerPassword:'',subTestArray:[], reportNumber:testReportNumber})
+firebase.database().ref('reportNumber').child('reportNumber').set(testReportNumber)
 // console.log(reportObj)
 }
 
