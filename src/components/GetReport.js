@@ -48,10 +48,10 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
 <br/> <br/>
 
 
-          <div>
+          <div className='container'>
 
 
-          {this.state.customerReports.map((it,ind)=>{return <p key={ind}>{it.patientName}</p>})}
+        <table className='browser-default'><thead><tr><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Test Name</th></tr></thead><tbody>{this.state.customerReports.map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.patientReport.map((item,index)=>{return <span key={index}>{item.testName}</span>})}</td></tr>})}</tbody></table>
 
 
           </div>
