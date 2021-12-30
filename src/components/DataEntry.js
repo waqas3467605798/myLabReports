@@ -179,7 +179,7 @@ firebase.database().ref('reportNumber').child('reportNumber').set(testReportNumb
            
            {/* Test Result */}
            <br/><br/>
-          <span style={{fontSize:'14px',color:'blue'}}> Test Result</span><br/>
+          <span style={{fontSize:'14px',color:'blue'}}> Test Result Feedings</span><br/>
 
           <button style={{width:'65%', backgroundColor:'lightblue'}} onClick={this.refreshTestNameList}>Select Main Test Name</button>
           <div style={{width:'65%'}}> <select className='browser-default' id='mainTestDropDownListDataEntry'>  {this.state.mainTestNameListObjects.map(  (item,i)=>{ return <option key={i} className='browser-default'>{item.mainTestName}</option>}  )       }   </select> </div>
