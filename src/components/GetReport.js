@@ -18,7 +18,8 @@ import {useReactToPrint} from 'react-to-print'
               customerReports:[],
               loadCustomerList:false,
               showReport:false,
-              displayReportObject:{patientReport:[]}
+              displayReportObject:{patientReport:[]},
+              noRecordFound:''
       }
 
   }
@@ -55,7 +56,10 @@ import {useReactToPrint} from 'react-to-print'
 
   
   getReport=()=>{
-    this.setState({showReport:true})
+
+
+
+this.setState({showReport:true})
     var reportNo = document.getElementById('repNo').value
     var reqObjPromise = new Promise( (res,rej)=>{
       var ourObj = this.state.customerReports.find((obj)=>{return obj.reportNumber === Number(reportNo)})
@@ -66,11 +70,20 @@ import {useReactToPrint} from 'react-to-print'
     
     reqObjPromise.then((reqObj)=>{
 
+if(reqObj){
+
       this.setState({displayReportObject:reqObj})
       // console.log(reqObj)
+
+}else{
+  // alert('Report Not Found')
+  this.setState({displayReportObject:{patientReport:[]}, showReport:false, noRecordFound:'No Record Found'})
+}
+
+
+
     })
 
-    
   }
 
 
@@ -83,7 +96,7 @@ import {useReactToPrint} from 'react-to-print'
 
           {/* Div of to getting Customer Report */}
           <div className='container'>
-          <span style={{fontSize:'19px',color:'blue'}}>Enter Report Number</span><br/><br/>
+          <span style={{fontSize:'14px',color:'blue'}}>Enter Report Number</span><br/>
           <input type='Number' id='repNo' placeholder='Enter Report Number Here'/> <br/>
           <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.getReport}>Get Report</button>  
           
@@ -91,11 +104,12 @@ import {useReactToPrint} from 'react-to-print'
           {/* report display div */}
           <div className={this.state.showReport===false?'display':''} style={{border:'1px solid red', padding:'15px', borderRadius:'10px'}}>
             <div style={{textAlign:'center', color:'blue'}}><span style={{color:'blue', fontSize:'30px'}}><b>ABC Lab Pvt Ltd</b></span><br/><span>ST No.06, Main Bazar, Mansoorabad, Faisalabad</span><br/><span>Contact: 0300-xxxxxxx36</span></div>
-            <p style={{textAlign:'right'}}>Report No: {this.state.displayReportObject.reportNumber}</p>
+            <p style={{textAlign:'right'}}>Report No: {this.state.displayReportObject.reportNumber}<br/>
+            Date:{this.state.displayReportObject.date}</p>
             <p style={{color:'brown', backgroundColor:'lightblue', textAlign:'center'}}><b>Customer Information</b></p>
             <table>
               <tbody>
-                <tr className={this.state.displayReportObject.date?'':'display'}><td>Date:</td><td>{this.state.displayReportObject.date}</td></tr>
+                {/* <tr className={this.state.displayReportObject.date?'':'display'}><td>Date:</td><td>{this.state.displayReportObject.date}</td></tr> */}
                 <tr className={this.state.displayReportObject.patientName?'':'display'}><td>Customer Name:</td><td>{this.state.displayReportObject.patientName}</td></tr>
                 <tr className={this.state.displayReportObject.age?'':'display'}><td>Age:</td><td>{this.state.displayReportObject.age}</td></tr>
                 <tr className={this.state.displayReportObject.cnic?'':'display'}><td>CNIC:</td><td>{this.state.displayReportObject.cnic}</td></tr>
@@ -107,6 +121,15 @@ import {useReactToPrint} from 'react-to-print'
             {this.state.displayReportObject.patientReport.map((item,index)=>{return <div key={index}><b style={{color:'blue',fontSize:'17px'}}>{item.testName}</b><table><thead><tr><th>Test Name</th><th>Result</th><th>Normal Range</th></tr></thead><tbody>{item.subTests.map((it,ind)=>{return <tr key={ind} className={it.result ? '' : 'display'}><td>{it.subTestName}</td><td>{it.result}</td><td>{it.range}</td></tr>})}</tbody></table></div>})} 
           </div>
           
+
+{/* in case record not found */}
+        <div className={this.state.showReport===false ?'' : 'display'}>
+        <span style={{color:'red', fontSize:'22px'}}><b>{this.state.noRecordFound}</b></span>
+        </div>
+
+
+
+
 
 
           </div>
@@ -195,9 +218,9 @@ import {useReactToPrint} from 'react-to-print'
 
           {/* Div of List of all customer Reports */}
           <div className='container'>
-          <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.refreshList}>Show List</button>  
+          <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.refreshList}>Show List</button>  <span style={{color:'red'}}>Last 500-Customers</span>
         <div className={this.state.loadCustomerList===false?'display' : ''}>
-        <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Test Name</th></tr></thead><tbody>{this.state.customerReports.sort((a, b) => (a.reportNumber < b.reportNumber) ? 1 : -1).map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.patientReport.map((item,index)=>{return <span key={index}>{item.testName} , </span>})}</td></tr>})}</tbody></table>
+        <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Test Name</th></tr></thead><tbody>{this.state.customerReports.sort((a, b) => (a.reportNumber < b.reportNumber) ? 1 : -1).map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.patientReport.map((item,index)=>{return <span key={index}>{item.testName} , </span>})}</td></tr>}).slice(0,500)}</tbody></table>
         </div>
           </div>
 

@@ -147,17 +147,16 @@ class LoginForm extends Component{
       <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
 <br/><br/>
 
+<div className='container center'>
+{/* <button>User Login</button> <button>Customer Reports</button> */}
+</div>
 
-            
+                {/* The Div of User Login is Here */}
              <div className="row container">
              <div className="col s12">
 
-<h2 className='headings' style={{fontSize:'25px'}}>User Login</h2>
 
-             
-              
-              
-              
+
                <div className="input-field">
               <input placeholder="Email" id="email" type="text" className="validate" />
               {/* <label forhtml="first_name">First Name</label> */}
@@ -168,7 +167,7 @@ class LoginForm extends Component{
               {/* <label forhtml="first_name">First Name</label> */}
                </div>
  
-               <button className="waves-effect btn-large" onClick={this.signin}>Login</button>
+               <button style={{padding:'10px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.signin}>Login</button>
 
                 <a href='#' onClick={this.showForgetField}>Forget Password ?</a>
 
@@ -181,8 +180,8 @@ class LoginForm extends Component{
                 
                 <div className={this.state.forgetStatus === false ? 'display' : ''}>
                 <p><b style={{color:'green'}}>Pleae enter your email address in below field on which you want to reset your Password</b></p>
-                <input type='text' value={this.state.forgetEmial} name='forgetEmail' onChange={this.changeHandler} placeholder='Write Email here' />
-                <button onClick={this.ressetPassword} className="waves-effect btn-large">Resset</button>
+                <input type='text' value={this.state.forgetEmial} name='forgetEmail' onChange={this.changeHandler} placeholder='Write Email here' /><br/>
+                <button onClick={this.ressetPassword} style={{padding:'10px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}}>Resset</button>
                 
                 </div>
               </div>
@@ -193,9 +192,9 @@ class LoginForm extends Component{
 
 
 
-<hr style={{height:'2px', backgroundColor:'red'}}/>
+{/* <hr style={{height:'2px', backgroundColor:'red'}}/>
 
-<br/><br/>
+<br/><br/> */}
 
 
 

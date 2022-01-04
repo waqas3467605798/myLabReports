@@ -99,6 +99,10 @@ input{
     width: 65% !important;
 }
 
+#repNo{
+    width: 20% !important;
+}
+
 .listedInput{
     width: 60px !important;
     

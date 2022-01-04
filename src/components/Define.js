@@ -14,7 +14,7 @@ import firebase from './Fire'
         testName:'',
         normalRange:'',
         showTestNameListStatus:false,
-        showMainHeadDiv:false,
+        showMainHeadDiv:true,
         showSubHeadDiv:false,
         mainTestName:'',
         mainTestNameListObjects:[],
