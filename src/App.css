@@ -108,3 +108,14 @@ input{
     
 }
 
+
+.navLinks_loginPage{
+    display: inline-block;
+    margin-right: 50px;
+    color:blue;
+}
+
+.navLinks_loginPage:hover{
+    color:red;
+    cursor:pointer;
+}

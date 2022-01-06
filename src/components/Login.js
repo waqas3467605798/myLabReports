@@ -4,7 +4,7 @@ import {Link, Route,BrowserRouter} from 'react-router-dom'
 import firebase from './Fire'
 import CustomerAccess from './CustomerAccess'
 import App from '../App'
-
+import labImg from './image.jpg'
 
 
 //This Component is made to show the all App you made
@@ -64,7 +64,9 @@ class LoginForm extends Component{
         super();
         this.state ={
                 forgetStatus:false,
-                forgetEmial:''
+                forgetEmial:'',
+                showLoginPage:false,
+                showCustomerReports:false
                 // customerPortal:false
 
 
@@ -128,7 +130,13 @@ class LoginForm extends Component{
 
 
 
+showLogin = ()=>{
+    this.setState({showLoginPage:true, showCustomerReports:false})
+}
 
+showCustomerPage=()=>{
+    this.setState({showLoginPage:false, showCustomerReports:true})
+}
 
 
      render(){
@@ -148,14 +156,12 @@ class LoginForm extends Component{
 <br/><br/>
 
 <div className='container center'>
-{/* <button>User Login</button> <button>Customer Reports</button> */}
+<span className='navLinks_loginPage' onClick={this.showLogin}>Admin-User</span>       <span className='navLinks_loginPage' onClick={this.showCustomerPage}>Customer Lab Reports</span>
 </div>
 
                 {/* The Div of User Login is Here */}
-             <div className="row container">
-             <div className="col s12">
-
-
+             <div className={this.state.showLoginPage===false?'display':'container'}>
+             {/* <div className="col s12"> */}
 
                <div className="input-field">
               <input placeholder="Email" id="email" type="text" className="validate" />
@@ -171,22 +177,31 @@ class LoginForm extends Component{
 
                 <a href='#' onClick={this.showForgetField}>Forget Password ?</a>
 
+<br/><br/><br/>
 
 
-<br/><br/><br/><br/>
-
-
-
-                
                 <div className={this.state.forgetStatus === false ? 'display' : ''}>
                 <p><b style={{color:'green'}}>Pleae enter your email address in below field on which you want to reset your Password</b></p>
                 <input type='text' value={this.state.forgetEmial} name='forgetEmail' onChange={this.changeHandler} placeholder='Write Email here' /><br/>
                 <button onClick={this.ressetPassword} style={{padding:'10px',fontSize:'18px',borderRadius:'7px', color:'blue', backgroundColor:'lightgreen'}}>Resset</button>
                 
                 </div>
-              </div>
+              {/* </div> */}
               </div>
               
+
+
+
+
+
+{/* div of customer reports */}
+<div className={this.state.showCustomerReports===false?'display':'container'}>
+Customer Reports
+</div>
+<br/><br/>
+<div className='container'>
+<img src={labImg} alt='Pic here' width='100%'/>
+</div>
 
 
 
@@ -199,12 +214,12 @@ class LoginForm extends Component{
 
 
 {/* Below code is only to show the component of customerAccess */}
-<div className='container'>
+{/* <div className='container'>
 <BrowserRouter>
 <Link to='/CustomerAccess' className='headings' style={{fontSize:'17px', backgroundColor:'lightgray', padding:'10px'}} > <b>Customer Login</b> </Link>
 <Route path='/CustomerAccess' component={CustomerAccess}/> 
  </BrowserRouter>
-</div>
+</div> */}
 {/* the code of customerAccess is ended here */}
 
 
