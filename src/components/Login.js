@@ -152,11 +152,12 @@ showCustomerPage=()=>{
  <div id='div1'> 
       Medical Lab Portal
       </div>
-      <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
+      <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span><br/>
+      <span className='navLinks_loginPage' onClick={this.showLogin}>User-Login</span>
 <br/><br/>
 
 <div className='container center'>
-<span className='navLinks_loginPage' onClick={this.showLogin}>Admin-User</span>       <span className='navLinks_loginPage' onClick={this.showCustomerPage}>Customer Lab Reports</span>
+    <span className='navLinks_loginPage' onClick={this.showCustomerPage}>Customer Lab Reports</span>
 </div>
 
                 {/* The Div of User Login is Here */}
