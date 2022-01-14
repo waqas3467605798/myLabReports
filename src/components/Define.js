@@ -31,20 +31,32 @@ import firebase from './Fire'
 
   async componentDidMount(){
     var dataPushPromise = new Promise( (res,rej)=>{
-    var userId = firebase.auth().currentUser.uid;
-    var userEmail = firebase.auth().currentUser.email
-    this.setState({user:userId,userEmail:userEmail})
-    res()
-    rej('Operation Failed: Data From Firebase does not push in state successfully')
-  } )
-  dataPushPromise.then(()=>{
+    // var userId = firebase.auth().currentUser.uid;
+    // var userEmail = firebase.auth().currentUser.email
+    // this.setState({user:userId,userEmail:userEmail})
+
+      var testObjs = []
 
     firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
-      this.state.mainTestNameListObjects.push(data.val())
+      testObjs.push(data.val())
     }  )
 
 
-  })
+
+    res(testObjs)
+    rej('Some thing went wrong')
+  } )
+  dataPushPromise.then((testObj)=>{
+
+
+this.setState({mainTestNameListObjects:testObj})
+    
+  }
+  ,
+  (err)=>{
+    alert(err)
+  }
+  )
 
 }
 

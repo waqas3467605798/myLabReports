@@ -39,14 +39,19 @@ import {useReactToPrint} from 'react-to-print'
 
 
     res(list)
-    rej('Operation Failed: Data From Firebase does not push in state successfully')
+    rej('Some thing went wrong')
   } )
   dataPushPromise.then((customerObj)=>{
   
     this.setState({customerReports:customerObj, loadCustomerList:true})
   
   
-  })
+  }
+  ,
+  (err)=>{
+    alert(err)
+  }
+  )
   
   }
 
@@ -161,9 +166,9 @@ if(reqObj){
 
   async componentDidMount(){
     var dataPushPromise = new Promise( (res,rej)=>{
-    var userId = firebase.auth().currentUser.uid;
-    var userEmail = firebase.auth().currentUser.email
-    this.setState({user:userId,userEmail:userEmail})
+    // var userId = firebase.auth().currentUser.uid;
+    // var userEmail = firebase.auth().currentUser.email
+    // this.setState({user:userId,userEmail:userEmail})
 
       var list = []
 
@@ -173,14 +178,19 @@ if(reqObj){
 
 
     res(list)
-    rej('Operation Failed: Data From Firebase does not push in state successfully')
+    rej('Some thing went wrong')
   } )
   dataPushPromise.then((customerObj)=>{
   
     this.setState({customerReports:customerObj, loadCustomerList:true})
   
   
-  })
+  }
+  ,
+  (err)=>{
+    alert(err)
+  }
+  )
   
   }
 
@@ -209,14 +219,17 @@ if(reqObj){
   // }
 
   deleteReport = (keyToDelete)=>{
-
+var confirmation = prompt("Enter 'Y' to confirm ")
+if(confirmation === 'Y'){
 
 firebase.database().ref('customerReports').child(keyToDelete).remove()
-
 var updateArray = this.state.customerReports.filter(  (obj)=>{return obj.key != keyToDelete}  )
-
-
 this.setState({customerReports:updateArray})
+alert('deleted successfully')
+}
+else{
+  alert('You have entered wrong key')
+}
 }
 
 

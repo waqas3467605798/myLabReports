@@ -41,28 +41,37 @@ import {Link, Route, BrowserRouter} from 'react-router-dom'
 //     this.setState({user:userId,userEmail:userEmail})
 //   }
 async componentDidMount(){
+
   var dataPushPromise = new Promise( (res,rej)=>{
-  var userId = firebase.auth().currentUser.uid;
-  var userEmail = firebase.auth().currentUser.email
-  this.setState({user:userId,userEmail:userEmail})
-  res()
-  rej('Operation Failed: Data From Firebase does not push in state successfully')
-} )
-dataPushPromise.then(()=>{
-
-  firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
-    this.state.mainTestNameListObjects.push(data.val())
-  }  )
-
-
+  // var userId = firebase.auth().currentUser.uid;
+  // var userEmail = firebase.auth().currentUser.email
+  // this.setState({user:userId,userEmail:userEmail})
   firebase.database().ref('reportNumber').on('child_added' , (data)=> {
     this.setState({reportNumber:data.val()})
   }  )
 
 
+var testObjs = [];
+
+  firebase.database().ref('mainTestNameList').on('child_added' , (data)=> { 
+    testObjs.push(data.val())
+  }  )
 
 
-})
+  res(testObjs)
+  rej('Some thing went wrong')
+} )
+dataPushPromise.then((testObj)=>{
+
+
+this.setState({mainTestNameListObjects:testObj})
+
+}
+,
+(err)=>{
+  alert(err)
+}
+)
 
 }
 
@@ -168,7 +177,7 @@ firebase.database().ref('reportNumber').child('reportNumber').set(testReportNumb
            
           {/* Patient Information */}
           <span style={{fontSize:'16px',color:'brown'}}> Patient Information</span><br/>
-          <input type='text' value={this.state.date} name='date' onChange={this.changeHandler} placeholder='Date' /><br/>
+          <input type='text' value={this.state.date} name='date' onChange={this.changeHandler} maxLength='11' placeholder='Date' /><br/>
           <input type='text' value={this.state.patientName} name='patientName' onChange={this.changeHandler} placeholder='Patient Name' /><br/>
           <input type='text' value={this.state.age} name='age' onChange={this.changeHandler} placeholder='Age' /><br/>
           <input type='text' value={this.state.cnic} name='cnic' onChange={this.changeHandler} placeholder='CNIC #' /><br/>
