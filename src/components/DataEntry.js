@@ -171,6 +171,12 @@ firebase.database().ref('reportNumber').child('reportNumber').set(testReportNumb
     render(){
         return(
           <div>
+          
+          <div className={navigator.onLine===true ? '' : 'display'}>
+
+
+
+
         <span style={{fontSize:'12px'}}><b style={{color:'green',marginLeft:'30px'}}>{this.state.userEmail}</b> / {navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
 <br/> <br/>
           <div className='container'>
@@ -211,6 +217,18 @@ firebase.database().ref('reportNumber').child('reportNumber').set(testReportNumb
           </div>
 
           </div>
+
+          </div>
+
+
+          {/* in case, internet is offline */}
+          <div className={navigator.onLine===true ? 'display' : 'container'}>
+          <span style={{fontSize:'20px', color:'red'}}>Some thing went wrong.... <br/>
+          Please check your internet connection</span>
+          </div>
+
+
+
 
           </div>
         )

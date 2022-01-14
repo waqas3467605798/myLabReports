@@ -96,6 +96,10 @@ if(reqObj){
 
         return(
           <div>
+          <div className={navigator.onLine===true ? '' : 'display'}>
+
+
+
         <span style={{fontSize:'12px'}}><b style={{color:'green',marginLeft:'30px'}}>{this.state.userEmail}</b> / {navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
 <br/> <br/>
 
@@ -124,7 +128,13 @@ if(reqObj){
               <br/>
             <p style={{color:'brown', backgroundColor:'lightblue', textAlign:'center'}}><b>Test Report</b></p>
             {this.state.displayReportObject.patientReport.map((item,index)=>{return <div key={index}><b style={{color:'blue',fontSize:'17px'}}>{item.testName}</b><table><thead><tr><th>Test Name</th><th>Result</th><th>Normal Range</th></tr></thead><tbody>{item.subTests.map((it,ind)=>{return <tr key={ind} className={it.result ? '' : 'display'}><td>{it.subTestName}</td><td>{it.result}</td><td>{it.range}</td></tr>})}</tbody></table></div>})} 
+            
           </div>
+          <span className={this.state.showReport===false?'display':''} style={{fontSize:'10px'}}>
+            Note:<br/>
+            1-This is computer generated report, no need any signature.<br/>
+            2-This report cannot be chellange in any court.
+            </span>
           
 
 {/* in case record not found */}
@@ -138,6 +148,19 @@ if(reqObj){
 
 
           </div>
+
+
+
+          </div>
+
+
+          {/* in case, internet is offline */}
+          <div className={navigator.onLine===true ? 'display' : 'container'}>
+          <span style={{fontSize:'20px', color:'red'}}>Some thing went wrong.... <br/>
+          Please check your internet connection</span>
+          </div>
+
+
 
           </div>
         )
@@ -182,8 +205,17 @@ if(reqObj){
   } )
   dataPushPromise.then((customerObj)=>{
   
-    this.setState({customerReports:customerObj, loadCustomerList:true})
+    this.setState({customerReports:customerObj})
   
+
+
+    setTimeout(
+      ()=>{
+        this.setState({loadCustomerList:true})
+      } , 1500
+    )
+  
+
   
   }
   ,
@@ -241,14 +273,16 @@ else{
 <br/><br/><br/>
 
           {/* Div of List of all customer Reports */}
-          <div className='container'>
+          <div className={this.state.loadCustomerList===false?'display' : 'container'}>
           <button style={{padding:'3px',fontSize:'14px',borderRadius:'4px', color:'blue', backgroundColor:'lightgreen'}} onClick={this.refreshList}>Show List</button>  <span style={{color:'red'}}>Last 500-Customers</span>
-        <div className={this.state.loadCustomerList===false?'display' : ''}>
         {/* <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Contact</th></tr></thead><tbody>{this.state.customerReports.sort((a, b) => (a.reportNumber < b.reportNumber) ? 1 : -1).map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.patientReport.map((item,index)=>{return <span key={index}>{item.testNam} , </span>})}</td></tr>}).slice(0,500)}</tbody></table> */}
         {/* <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Contact</th></tr></thead><tbody>{this.state.customerReports.sort((a, b) => (a.reportNumber < b.reportNumber) ? 1 : -1).map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.contact}</td><td><a href='#' className="material-icons" style={{color:'red',fontSize:'15px'}} onClick={()=> this.deleteReport(it.key)}>delete</a></td></tr>}).slice(0,500)}</tbody></table> */}
-        <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Contact</th></tr></thead><tbody>{this.state.customerReports.reverse().map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.contact}</td><td><a href='#' className="material-icons" style={{color:'red',fontSize:'15px'}} onClick={()=> this.deleteReport(it.key)}>delete</a></td></tr>}).slice(0,500)}</tbody></table>
+        <table className='browser-default'><thead><tr style={{backgroundColor:'lightyellow'}}><th>R#</th><th>Date</th><th>Name</th><th>Age</th><th>Contact</th><th>Delete</th></tr></thead><tbody>{this.state.customerReports.reverse().map((it,ind)=>{return <tr key={ind}><td>{it.reportNumber}</td><td>{it.date}</td><td>{it.patientName}</td><td>{it.age}</td><td>{it.contact}</td><td><a href='#' className="material-icons" style={{color:'red',fontSize:'15px'}} onClick={()=> this.deleteReport(it.key)}>delete</a></td></tr>}).slice(0,500)}</tbody></table>
         </div>
-          </div>
+
+          <div className={this.state.loadCustomerList===false?'container' : 'display'}>
+          <span style={{fontSize:'20px', color:'red'}}>loading ..... <br/> Please Wait</span>
+           </div>
 
           </div>
         )
