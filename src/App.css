@@ -52,11 +52,11 @@ border-bottom-left-radius: 35px;
 
 
 .bottomLine{
-    text-align: center;
+    /* text-align: center; */
 background-color:lemonchiffon;
-/* font-size: 36px; */
+font-size: 10px;
 color:blue;
-padding:15px;
+padding:10px;
 border-top-right-radius: 35px;
 border-top-left-radius: 35px;
 }

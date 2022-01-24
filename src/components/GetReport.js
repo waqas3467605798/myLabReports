@@ -100,7 +100,7 @@ if(reqObj){
 
 
 
-        <span style={{fontSize:'12px'}}><b style={{color:'green',marginLeft:'30px'}}>{this.state.userEmail}</b> / {navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span>
+        {/* <span style={{fontSize:'12px'}}><b style={{color:'green',marginLeft:'30px'}}>{this.state.userEmail}</b> / {navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span> */}
 <br/> <br/>
 
           {/* Div of to getting Customer Report */}
@@ -306,6 +306,9 @@ const handlePrint = useReactToPrint({
     <div style={{textAlign:'center'}}><button style={{padding:'5px',fontSize:'14px',borderRadius:'4px', color:'black', backgroundColor:'lightgreen'}} onClick={handlePrint}>Print Report</button></div>
     <br/><br/><br/><br/>
     <CustomerList />
+
+
+    
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import react, {Component} from 'react'
+import react, {Component , useRef} from 'react'
 import '../App.css';
 import {Link, Route,BrowserRouter} from 'react-router-dom'
 import firebase from './Fire'
@@ -6,6 +6,9 @@ import CustomerAccess from './CustomerAccess'
 import App from '../App'
 import labImg from './image.jpg'
 import instruc from './instruc.png'
+import {useReactToPrint} from 'react-to-print'
+
+
 
 
 //This Component is made to show the all App you made
@@ -75,12 +78,32 @@ export default Login;
 
 
 
+class Headers extends Component{
+
+    render(){
+        return(
+            <div>
+                <div id='div1'> 
+                 Medical Lab Portal
+                 </div>
+
+                    <div className='container center'>
+                    <img src={instruc} alt='Pic here' width='80%'/><br/>
+                    </div>
+            </div>
+        )
+    }
+}
+
+
+
+
 
 
 
 
 //THis Component is made to login by the user (it is login form)
-class LoginForm extends Component{
+class LoginFormDisplay extends Component{
    
     constructor(){
         super();
@@ -239,17 +262,18 @@ showCustomerPage=()=>{
 
 
 
- <div id='div1'> 
+ {/* <div id='div1'> 
       Medical Lab Portal
-      </div>
-      <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span><br/>
-      <span className='navLinks_loginPage' onClick={this.showLogin}>User-Login</span>
-<br/><br/>
+      </div> */}
+      {/* <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span><br/> */}
+      
 
 <div className='container center'>
-<img src={instruc} alt='Pic here' width='80%'/><br/>
+{/* <img src={instruc} alt='Pic here' width='80%'/><br/> */}
     <span className='navLinks_loginPage' onClick={this.showCustomerPage}>Customer Lab Reports</span>
 </div>
+
+<span className='navLinks_loginPage' onClick={this.showLogin}>User-Login</span>
 
                 {/* The Div of User Login is Here */}
              <div className={this.state.showLoginPage===false?'display':'container'}>
@@ -335,9 +359,9 @@ showCustomerPage=()=>{
 
 
 {/* here from image and other contents is starting */}
-<div className='container'>
+{/* <div className='container'>
 <img src={labImg} alt='Pic here' width='100%'/>
-</div>
+</div> */}
 
 
 
@@ -362,12 +386,12 @@ showCustomerPage=()=>{
 
 
 
-<br/><br/>
+{/* <br/><br/>
 <div className='bottomLine'> 
 
 Online Lab Test Report System<br/>
 Contact: 0346-7605798 Email: waqas_mba86@yahoo.com
-</div>
+</div> */}
 
 {/* </div> */}
 
@@ -379,3 +403,66 @@ Contact: 0346-7605798 Email: waqas_mba86@yahoo.com
      }
  }
 
+
+
+
+
+
+ class Content extends Component{
+
+    render(){
+        return(
+            <div>
+                
+
+                    <div className='container'>
+                    <img src={labImg} alt='Pic here' width='100%'/>
+                    
+                    </div>
+
+
+            </div>
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ const LoginForm = ()=>{
+
+    const componentRef = useRef();
+    const handlePrint = useReactToPrint({
+      content: ()=>componentRef.current,
+    })
+    
+      return(
+        <div>
+            <Headers />
+            <LoginFormDisplay ref={componentRef}/>
+            <div style={{textAlign:'center'}}><button style={{padding:'5px',fontSize:'14px',borderRadius:'4px', color:'black', backgroundColor:'lightgreen'}} onClick={handlePrint}>Print Report</button></div>
+            <br/>
+            <Content />
+        
+
+
+        <span style={{fontSize:'12px'}}>{navigator.onLine===true ? <span style={{color:'green'}}>You are online</span> : <span style={{color:'red'}}>You are OffLine</span>}</span><br/>
+        <div className='bottomLine'> 
+        Developed By: Waqas Saleem Contact: 0346-7605798 Email: waqas.mba86@gmail.com
+        </div>
+
+
+
+
+        </div>
+      )
+    }
